@@ -29,20 +29,38 @@ export default {
         function pintaPedidos(pedidos){
             let html = ''
             pedidos.forEach(pedido => {
-                html += `
-                <tr>
-                    <td>${pedido.nombreGrupo}</td>
-                    <td>${pedido.numeroMesa}</td>
-                    <td>${pedido.cervezas}</td>
-                    <td>${pedido.cantidad}</td>
-                    <td>
-                    <div class="d-flex gap-2">
-                    <button class="btn btn-outline-warning w-100 btn-sm">Pedido pendiente...</button>
-                    <button class="btn btn-outline-danger w-100 btn-sm"> 🗑 Borrar pedido</button>
-                    </div>       
-                    </td>
-                </tr>
-                `
+                if(pedido.estado == 'pendiente'){
+                    html += `
+                    <tr>
+                        <td>${pedido.nombreGrupo}</td>
+                        <td>${pedido.numeroMesa}</td>
+                        <td>${pedido.cervezas}</td>
+                        <td>${pedido.cantidad}</td>
+                        <td>
+                        <div class="d-flex gap-2">
+                        <button class="btn btn-outline-warning w-100 btn-sm">Pedido pendiente...</button>
+                        <button class="btn btn-outline-danger w-100 btn-sm"> 🗑 Borrar pedido</button>
+                        </div>       
+                        </td>
+                    </tr>
+                    `
+                }else{
+                    html += `
+                    <tr>
+                        <td>${pedido.nombreGrupo}</td>
+                        <td>${pedido.numeroMesa}</td>
+                        <td>${pedido.cervezas}</td>
+                        <td>${pedido.cantidad}</td>
+                        <td>
+                        <div class="d-flex gap-2">
+                        <button class="btn btn-outline-success w-100 btn-sm">Completado</button>
+                        <button class="btn btn-outline-danger w-100 btn-sm"> 🗑 Borrar pedido</button>
+                        </div>       
+                        </td>
+                    </tr>
+                    `
+                }
+               
             });
             document.querySelector('.tablaPedidos').innerHTML = html
         }
@@ -60,21 +78,20 @@ export default {
                 numeroMesa: numeroMesa,
                 cervezas: cervezas,
                 cantidad: cantidad,
+                estado: 'pendiente'
             }
     
             pedidos.push(pedido)
             
             pintaPedidos(pedidos)
             
-            const pendiente = document.querySelectorAll('.btn-outline-warning')
-            pendiente.forEach(pendi => {
-                pendi.addEventListener('click', ()=>{
-                    pendi.innerHTML = 'Servido'
-                    pendi.classList.remove('btn-outline-warning')
-                    pendi.classList.add('btn-outline-success')
+            const pendienteButtons = document.querySelectorAll('.btn-outline-warning')
 
+            pendienteButtons.forEach((pendi, index) => {
+                pendi.addEventListener('click', () => {
+                    pedidos[index].estado = 'completo';
+                    pintaPedidos(pedidos);
                 })
-                
             });
 
             const borrar = document.querySelectorAll('.btn-outline-danger')
